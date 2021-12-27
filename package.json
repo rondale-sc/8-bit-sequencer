@@ -10,5 +10,8 @@
   },
   "dependencies": {
     "express": "^4.17.2"
+  },
+  "devDependencies": {
+    "chokidar": "^3.5.2"
   }
 }
