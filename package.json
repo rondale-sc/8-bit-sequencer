@@ -1,0 +1,8 @@
+{
+  "name": "8-bit-sequencer",
+  "version": "1.0.0",
+  "description": "little sequencer inspired by \"Look Mum No Computer\" YT channel",
+  "main": "index.js",
+  "author": "Jonathan Jackson <jonathan.jackson@addepar.com>",
+  "license": "MIT"
+}
