@@ -5,6 +5,9 @@
   "main": "index.js",
   "author": "Jonathan Jackson <jonathan.jackson@addepar.com>",
   "license": "MIT",
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
     "express": "^4.17.2"
   }
