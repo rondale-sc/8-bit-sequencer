@@ -4,5 +4,8 @@
   "description": "little sequencer inspired by \"Look Mum No Computer\" YT channel",
   "main": "index.js",
   "author": "Jonathan Jackson <jonathan.jackson@addepar.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.2"
+  }
 }
