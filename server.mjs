@@ -19,6 +19,8 @@ function startServer() {
       indexRoute(req, res, next);
     });
 
+    app.use(express.static('app'))
+
     server.on('connection', (socket) => {
       sockets.push(socket);
     });
