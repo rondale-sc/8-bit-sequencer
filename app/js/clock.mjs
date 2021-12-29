@@ -1,12 +1,14 @@
 export const Clock =  class Clock {
   constructor({ onTick }) {
-    this.worker = new Worker('./js/clock-worker.js');
+    this.worker = new Worker('./js/clock-worker.mjs');
     this.onTick = onTick
+    this.isRunning = false;
   }
 
   start() {
     this.worker.postMessage({event: 'start'});
-    this.worker.onmessage = ({data: {event}}) => {
+    this.isRunning = true;
+    this.worker.onmessage = ({data: { event }}) => {
       if (event === 'tick') {
         this.onTick();
       }
@@ -14,7 +16,8 @@ export const Clock =  class Clock {
   }
 
   stop() {
-    this.worker.postMessage({event: 'stop'});
+    this.worker.postMessage({ event: 'stop' });
+    this.isRunning = false;
   }
 
   setInterval(interval) {

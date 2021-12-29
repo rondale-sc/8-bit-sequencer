@@ -6,12 +6,14 @@
   "author": "Jonathan Jackson <jonathan.jackson@addepar.com>",
   "license": "MIT",
   "scripts": {
-    "start": "node index.js"
+    "start": "node server.mjs",
+    "test": "jasmine"
   },
   "dependencies": {
     "express": "^4.17.2"
   },
   "devDependencies": {
-    "chokidar": "^3.5.2"
+    "chokidar": "^3.5.2",
+    "jasmine": "^3.10.0"
   }
 }

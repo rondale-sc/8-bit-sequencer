@@ -4,25 +4,29 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <link rel="stylesheet" type="text/css" href="./css/style.css">
     <script type="module">
-      import { Clock } from './js/sequencer.js';
+      import { Clock } from './js/clock.mjs';
 
-      let audioContext = new AudioContext();
 
-      document.getElementById('clock-start-stop').addEventListener('click', function() {
-        console.log('start / stop');
-        audioContext.resume();
-      });
+      let audioContext;
 
       let clock = new Clock({
         onTick: () => {
+          console.log('onTick');
           const clockEl = document.getElementById('clock')
-          clockEl.style['background-color'] = '#fad693';
           clockEl.innerHTML = Math.floor(audioContext.currentTime);
-          clockEl.style['background-color'] = '#b4b4b4';
         }
       });
-      clock.start();
-      window.clock = clock;
+
+      document.getElementById('clock-start-stop').addEventListener('click', function() {
+        audioContext = new AudioContext();
+
+        if (!clock.isRunning) {
+          clock.start();
+          audioContext.resume();
+        } else {
+          clock.stop();
+        }
+      });
     </script>
   </head>
   <body>
