@@ -4,45 +4,64 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <link rel="stylesheet" type="text/css" href="./css/style.css">
     <script type="module">
+      import ShiftRegister from './js/shift-register.mjs';
       import { Clock } from './js/clock.mjs';
+      let containerDiv = document.getElementById('container');
 
-
-      let audioContext;
+      let shiftRegister = new ShiftRegister(8);
+      let bitElements = [];
+      shiftRegister.bitArray.forEach((bit, index) => {
+        let div = document.createElement('div');
+        div.classList.add('box');
+        div.innerText = index + 1;
+        containerDiv.appendChild(div);
+        bitElements.push(div);
+      });
 
       let clock = new Clock({
-        onTick: () => {
-          console.log('onTick');
-          const clockEl = document.getElementById('clock')
-          clockEl.innerHTML = Math.floor(audioContext.currentTime);
+        onTick() {
+          bitElements.forEach((bitDiv, index) => {
+            if (shiftRegister.bitArray[index] === 1) {
+              bitDiv.classList.add('bit-on');
+
+            } else {
+              bitDiv.classList.remove('bit-on');
+            }
+          });
+
+          shiftRegister.onTick();
         }
       });
+      window.myClock = clock;
 
       document.getElementById('clock-start-stop').addEventListener('click', function() {
-        audioContext = new AudioContext();
-
         if (!clock.isRunning) {
           clock.start();
-          audioContext.resume();
         } else {
           clock.stop();
-        }
-      });
+         }
+       });
+
+       document.getElementById('write-bit').addEventListener('click', function() {
+         shiftRegister.writeBit();
+       });
+
+       document.getElementById('loop').addEventListener('click', function() {
+         shiftRegister.looping = !shiftRegister.looping;
+       });
     </script>
   </head>
+
   <body>
-    <div class="container">
-      <div class="box">1</div>
-      <div class="box">2</div>
-      <div class="box">3</div>
-      <div class="box">4</div>
-      <div class="box">5</div>
-      <div class="box">6</div>
-      <div class="box">7</div>
-      <div class="box">8</div>
+    <div id="container" class="container">
     </div>
 
     <div id="clock" class="box">0</div>
 
     <button id="clock-start-stop">Start / Stop</button>
+
+    <button id="write-bit">Write Bit</button>
+
+    <button id="loop">Loop</button>
   </body>
 </html>

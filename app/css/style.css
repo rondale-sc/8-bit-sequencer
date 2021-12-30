@@ -12,6 +12,11 @@
   margin: 10px;
 }
 
+.bit-on {
+  background-color: white;
+  color: black;
+}
+
 #clock {
   background-color: #b4b4b4;
 }

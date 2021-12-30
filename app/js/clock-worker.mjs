@@ -1,4 +1,4 @@
-const DEFAULT_INTERVAL = 1000;
+const DEFAULT_INTERVAL = 100;
 let interval;
 let intervalId;
 
