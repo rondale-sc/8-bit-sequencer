@@ -1,3 +1,7 @@
+body {
+  background-color: #d5eff5;
+}
+
 .container {
   display: grid;
   grid-template-columns: 25% 25% 25% 25%;
@@ -6,15 +10,14 @@
 .box {
   background-color: #444;
   color: #fff;
-  border-radius: 5px;
+  border-radius: 2px;
   padding: 20px;
   font-size: 150%;
-  margin: 10px;
+  margin: 2px;
 }
 
 .bit-on {
-  background-color: white;
-  color: black;
+  filter: brightness(1.50);
 }
 
 #clock {

@@ -22,8 +22,8 @@
         let kick = new Kick(context);
 
         let instruments = [
-          { instrument: snare, display: 'Snare', value: 'snare' },
           { instrument: hiHat, display: 'Hi Hat', value: 'hiHat' },
+          { instrument: snare, display: 'Snare', value: 'snare' },
           { instrument: kick, display: 'Kick', value: 'kick' }
         ];
         /* Setup instruments */
@@ -49,7 +49,7 @@
           return boxDiv;
         }
 
-        let shiftRegister = new ShiftRegister(16);
+        let shiftRegister = new ShiftRegister(24);
         let containerDiv = document.getElementById('container');
 
         let bitElements = [];
@@ -67,9 +67,13 @@
                 let { instrument } = instruments.find(i => i['value'] === instrumentName);
                 instrument.trigger(context.currentTime);
 
-                bitDiv.classList.add('bit-on');
+               requestIdleCallback(() =>{
+                 bitDiv.classList.add('bit-on');
+               });
               } else {
-                bitDiv.classList.remove('bit-on');
+                requestIdleCallback(() =>{
+                  bitDiv.classList.remove('bit-on');
+                });
               }
             });
 
@@ -78,10 +82,12 @@
         });
         window.myClock = clock;
 
-        document.getElementById('clock-start-stop').addEventListener('click', function() {
+        document.getElementById('clock-start-stop').addEventListener('click', function(event) {
           if (!clock.isRunning) {
+            event.target.innerHTML = 'Stop';
             clock.start();
           } else {
+            event.target.innerHTML = 'Restart';
             clock.stop();
            }
          });
@@ -92,6 +98,9 @@
 
          document.getElementById('loop').addEventListener('click', function() {
            shiftRegister.looping = !shiftRegister.looping;
+
+           let loopDisplayEl = document.getElementById('loop-display');
+           loopDisplayEl.innerHTML = shiftRegister.looping ? 'Looping' : 'Not Looping';
          });
 
          let tempoFunc = function(event) {
@@ -99,7 +108,7 @@
            clock.setInterval(value);
            document.getElementById('interval-display').innerHTML = value;
          }
-         let debounced =  debounce(tempoFunc, 150);
+         let debounced =  debounce(tempoFunc, 20);
          document.getElementById('interval').addEventListener('input', debounced);
       }
 
@@ -115,14 +124,16 @@
 
     <div id="clock" class="box">0</div>
 
-    <button id="clock-start-stop">Start / Stop</button>
+    <button id="clock-start-stop">Start</button>
 
     <button id="write-bit">Write Bit</button>
 
     <button id="loop">Loop</button>
 
-    <input id="interval" type="range" min="50" max="500" step="10" value="50">
+    <span id="loop-display">Not Looping</span>
 
-    <span id="interval-display">50</span>ms
+    <input id="interval" type="range" min="50" max="500" step="5" value="140">
+
+    <span id="interval-display">140</span>ms
   </body>
 </html>
