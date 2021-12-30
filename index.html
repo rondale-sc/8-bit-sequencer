@@ -67,13 +67,9 @@
                 let { instrument } = instruments.find(i => i['value'] === instrumentName);
                 instrument.trigger(context.currentTime);
 
-               requestIdleCallback(() =>{
-                 bitDiv.classList.add('bit-on');
-               });
+                bitDiv.classList.add('bit-on');
               } else {
-                requestIdleCallback(() =>{
-                  bitDiv.classList.remove('bit-on');
-                });
+                bitDiv.classList.remove('bit-on');
               }
             });
 
