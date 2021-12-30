@@ -1,6 +1,6 @@
 export const Clock =  class Clock {
   constructor({ onTick }) {
-    this.worker = new Worker('./js/clock-worker.mjs');
+    this.worker = new Worker('./app/js/clock-worker.mjs');
     this.onTick = onTick
     this.isRunning = false;
   }
