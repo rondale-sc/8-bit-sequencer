@@ -7,9 +7,9 @@
       import ShiftRegister from './js/shift-register.mjs';
       import { Clock } from './js/clock.mjs';
       import { Snare, Kick, HiHat, sampleLoader } from './js/instruments.mjs';
+      import { debounce } from './js/utilities.mjs';
 
       async function main() {
-        let containerDiv = document.getElementById('container');
 
         /* Setup Audio Context and Instruments */
         let context = new AudioContext();
@@ -49,7 +49,8 @@
           return boxDiv;
         }
 
-        let shiftRegister = new ShiftRegister(8);
+        let shiftRegister = new ShiftRegister(16);
+        let containerDiv = document.getElementById('container');
 
         let bitElements = [];
         shiftRegister.bitArray.forEach((bit, index) => {
@@ -92,6 +93,14 @@
          document.getElementById('loop').addEventListener('click', function() {
            shiftRegister.looping = !shiftRegister.looping;
          });
+
+         let tempoFunc = function(event) {
+           let value = parseInt(event.target.value)
+           clock.setInterval(value);
+           document.getElementById('interval-display').innerHTML = value;
+         }
+         let debounced =  debounce(tempoFunc, 150);
+         document.getElementById('interval').addEventListener('input', debounced);
       }
 
 
@@ -111,5 +120,9 @@
     <button id="write-bit">Write Bit</button>
 
     <button id="loop">Loop</button>
+
+    <input id="interval" type="range" min="50" max="500" step="10" value="50">
+
+    <span id="interval-display">50</span>ms
   </body>
 </html>
