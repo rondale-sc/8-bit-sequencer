@@ -80,6 +80,7 @@
 
         document.getElementById('clock-start-stop').addEventListener('click', function(event) {
           if (!clock.isRunning) {
+            context.resume();
             event.target.innerHTML = 'Stop';
             clock.start();
           } else {
