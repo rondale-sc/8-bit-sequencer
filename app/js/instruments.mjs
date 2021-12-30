@@ -52,3 +52,63 @@ Snare.prototype.trigger = function(time) {
   this.noise.stop(time + 0.2);
 };
 
+export function Kick(context) {
+  this.context = context;
+};
+
+Kick.prototype.setup = function() {
+  this.osc = this.context.createOscillator();
+  this.gain = this.context.createGain();
+  this.osc.connect(this.gain);
+  this.gain.connect(this.context.destination)
+};
+
+Kick.prototype.trigger = function(time) {
+  this.setup();
+
+  this.osc.frequency.setValueAtTime(150, time);
+  this.gain.gain.setValueAtTime(1, time);
+
+  this.osc.frequency.exponentialRampToValueAtTime(0.01, time + 0.5);
+  this.gain.gain.exponentialRampToValueAtTime(0.01, time + 0.5);
+
+  this.osc.start(time);
+
+  this.osc.stop(time + 0.5);
+};
+
+
+export function HiHat(context, buffer) {
+  this.context = context;
+  this.buffer = buffer;
+};
+
+HiHat.prototype.setup = function() {
+  this.source = this.context.createBufferSource();
+  this.source.buffer = this.buffer;
+  this.source.connect(this.context.destination);
+};
+
+HiHat.prototype.trigger = function(time) {
+  this.setup();
+
+  this.source.start(time);
+};
+
+export let sampleLoader = function(url, context, callback) {
+  return new Promise(resolve => {
+    let request = new XMLHttpRequest();
+    request.open("GET", url, true);
+    request.responseType = "arraybuffer";
+
+    request.onload = function() {
+      context.decodeAudioData(request.response, function(buffer) {
+        // window.buffer = buffer;
+        callback(buffer);
+        resolve();
+      });
+    };
+
+    request.send();
+  });
+};

@@ -6,54 +6,97 @@
     <script type="module">
       import ShiftRegister from './js/shift-register.mjs';
       import { Clock } from './js/clock.mjs';
-      import { Snare } from './js/snare.mjs';
+      import { Snare, Kick, HiHat, sampleLoader } from './js/instruments.mjs';
 
-      let containerDiv = document.getElementById('container');
+      async function main() {
+        let containerDiv = document.getElementById('container');
 
-      let shiftRegister = new ShiftRegister(32);
-      let bitElements = [];
-      shiftRegister.bitArray.forEach((bit, index) => {
-        let div = document.createElement('div');
-        div.classList.add('box');
-        div.innerText = index + 1;
-        containerDiv.appendChild(div);
-        bitElements.push(div);
-      });
+        /* Setup Audio Context and Instruments */
+        let context = new AudioContext();
 
-      let context = new AudioContext();
-      let snare = new Snare(context);
+        let hiHat;
+        await sampleLoader('samples/hihat.wav', context, function(buffer) {
+          hiHat = new HiHat(context, buffer);
+        });
+        let snare = new Snare(context);
+        let kick = new Kick(context);
 
-      let clock = new Clock({
-        onTick() {
-          bitElements.forEach((bitDiv, index) => {
-            if (shiftRegister.bitArray[index] === 1) {
-              snare.trigger(context.currentTime);
-              bitDiv.classList.add('bit-on');
-            } else {
-              bitDiv.classList.remove('bit-on');
-            }
+        let instruments = [
+          { instrument: snare, display: 'Snare', value: 'snare' },
+          { instrument: hiHat, display: 'Hi Hat', value: 'hiHat' },
+          { instrument: kick, display: 'Kick', value: 'kick' }
+        ];
+        /* Setup instruments */
+
+        function createBoxElement(index) {
+          let boxDiv = document.createElement('div');
+          boxDiv.classList.add('box');
+          boxDiv.innerText = index + 1;
+
+          let controlsDiv = document.createElement('div');
+          controlsDiv.classList.add('control');
+
+          let controlSelect = document.createElement('select');
+          instruments.forEach(({ display, value }) => {
+            let controlOption = document.createElement('option');
+            controlOption.text = display;
+            controlOption.value = value;
+            controlSelect.appendChild(controlOption);
           });
 
-          shiftRegister.onTick();
+          controlsDiv.appendChild(controlSelect);
+          boxDiv.appendChild(controlsDiv);
+          return boxDiv;
         }
-      });
-      window.myClock = clock;
 
-      document.getElementById('clock-start-stop').addEventListener('click', function() {
-        if (!clock.isRunning) {
-          clock.start();
-        } else {
-          clock.stop();
-         }
-       });
+        let shiftRegister = new ShiftRegister(8);
 
-       document.getElementById('write-bit').addEventListener('click', function() {
-         shiftRegister.writeBit();
-       });
+        let bitElements = [];
+        shiftRegister.bitArray.forEach((bit, index) => {
+          let boxDiv = createBoxElement(index);
+          containerDiv.appendChild(boxDiv);
+          bitElements.push(boxDiv);
+        });
 
-       document.getElementById('loop').addEventListener('click', function() {
-         shiftRegister.looping = !shiftRegister.looping;
-       });
+        let clock = new Clock({
+          onTick() {
+            bitElements.forEach((bitDiv, index) => {
+              if (shiftRegister.bitArray[index] === 1) {
+                let instrumentName = bitDiv.querySelector('.control > select').value
+                let { instrument } = instruments.find(i => i['value'] === instrumentName);
+                instrument.trigger(context.currentTime);
+
+                bitDiv.classList.add('bit-on');
+              } else {
+                bitDiv.classList.remove('bit-on');
+              }
+            });
+
+            shiftRegister.onTick();
+          }
+        });
+        window.myClock = clock;
+
+        document.getElementById('clock-start-stop').addEventListener('click', function() {
+          if (!clock.isRunning) {
+            clock.start();
+          } else {
+            clock.stop();
+           }
+         });
+
+         document.getElementById('write-bit').addEventListener('click', function() {
+           shiftRegister.writeBit();
+         });
+
+         document.getElementById('loop').addEventListener('click', function() {
+           shiftRegister.looping = !shiftRegister.looping;
+         });
+      }
+
+
+     /* I hate myself for building it this way */
+     main();
     </script>
   </head>
 
