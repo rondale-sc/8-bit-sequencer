@@ -6,6 +6,8 @@
     <script type="module">
       import ShiftRegister from './js/shift-register.mjs';
       import { Clock } from './js/clock.mjs';
+      import { Snare } from './js/snare.mjs';
+
       let containerDiv = document.getElementById('container');
 
       let shiftRegister = new ShiftRegister(8);
@@ -18,12 +20,15 @@
         bitElements.push(div);
       });
 
+      let context = new AudioContext();
+      let snare = new Snare(context);
+
       let clock = new Clock({
         onTick() {
           bitElements.forEach((bitDiv, index) => {
             if (shiftRegister.bitArray[index] === 1) {
+              snare.trigger(context.currentTime);
               bitDiv.classList.add('bit-on');
-
             } else {
               bitDiv.classList.remove('bit-on');
             }
