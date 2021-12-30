@@ -13,12 +13,12 @@ self.onmessage = function({data: { event, interval }}) {
     console.log('starting interval');
     intervalId = tick();
   } else if (event === 'interval') {
-    console.log('setting interval');
     interval = interval;
     console.log("interval="+interval);
+    console.log(`clearing=${intervalId}`);
     if (intervalId) {
       clearInterval(intervalId);
-      timerID=tick(interval);
+      intervalId=tick(interval);
     }
   } else if (event === 'stop') {
     console.log("stoping");
